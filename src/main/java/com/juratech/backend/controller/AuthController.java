@@ -55,6 +55,7 @@ public class AuthController {
             response.put("role", user.getRole());
             response.put("requiresPasswordChange", user.isRequiresPasswordChange());
             response.put("name", user.getName());
+            response.put("uid", user.getId());
 
             return ResponseEntity.ok(response);
         }

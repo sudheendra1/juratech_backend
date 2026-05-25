@@ -19,7 +19,7 @@ public class ReviewController {
         }
 
         // 1. Submit or Update a Review
-        @PostMapping("/")
+        @PostMapping
         public ResponseEntity<ReviewModel> submitReview(@RequestBody ReviewModel reviewPayload) {
             // If a review already exists for this submission, you might want to update it
             // instead of creating a duplicate.

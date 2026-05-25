@@ -9,6 +9,7 @@ public interface DocumentRepository extends MongoRepository<LoanDocumentModel, S
 
         List<LoanDocumentModel> findByStatusInOrderBySubmittedAtAsc(List<String> statuses);
         List<LoanDocumentModel> findByUserIdOrderBySubmittedAtDesc(String userId);
+        List<LoanDocumentModel> findByReviewerOrderBySubmittedAtDesc(String reviewerUid);
 
 
 }
