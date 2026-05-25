@@ -4,6 +4,7 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
 import java.security.Key;
 import java.util.Date;
 
@@ -26,21 +27,21 @@ public class JwtUtils {
         // We include the user's email and their role directly inside the token payload
         public String generateJwtToken(String email, String role) {
             return Jwts.builder()
-                    .setSubject(email)
+                    .subject(email)
                     .claim("role", role)
-                    .setIssuedAt(new Date())
-                    .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
-                    .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                    .issuedAt(new Date())
+                    .expiration(new Date((new Date()).getTime() + jwtExpirationMs))
+                    .signWith(getSigningKey())
                     .compact();
         }
 
         // 2. EXTRACT THE EMAIL
         public String getEmailFromJwtToken(String token) {
-            return Jwts.parserBuilder()
-                    .setSigningKey(getSigningKey())
+            return Jwts.parser()
+                    .verifyWith((SecretKey) getSigningKey())
                     .build()
-                    .parseClaimsJws(token)
-                    .getBody()
+                    .parseSignedClaims(token)
+                    .getPayload()
                     .getSubject();
         }
 
@@ -48,10 +49,12 @@ public class JwtUtils {
         // Ensures the token hasn't been tampered with, hasn't expired, and is formatted correctly
         public boolean validateJwtToken(String authToken) {
             try {
-                Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(authToken);
+                Jwts.parser().verifyWith((SecretKey) getSigningKey()).build().parseSignedClaims(authToken);
                 return true;
-            } catch (SecurityException | MalformedJwtException e) {
+            } catch (SignatureException e) {
                 System.err.println("Invalid JWT signature: " + e.getMessage());
+            } catch (MalformedJwtException e) {
+                System.err.println("Invalid JWT token: " + e.getMessage());
             } catch (ExpiredJwtException e) {
                 System.err.println("JWT token is expired: " + e.getMessage());
             } catch (UnsupportedJwtException e) {

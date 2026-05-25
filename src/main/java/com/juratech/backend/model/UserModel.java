@@ -13,9 +13,12 @@ public class UserModel {
         private String email;
         private String password;
         private String role; // "ADMIN", "REVIEWER", "USER"
-
+        private String name;
         private boolean isEnabled = true;
         private boolean requiresPasswordChange = true;
+        private int assignedCount = 0;
+        private int approved = 0;
+        private int rejected = 0;
 
 
 }

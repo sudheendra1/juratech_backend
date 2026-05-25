@@ -35,7 +35,7 @@ public class EmailService {
             helper.setSubject("Welcome to Juratech - Set Up Your Account");
 
             // The link that points back to your React app's password reset module
-            String resetLink = frontendUrl + "/reset-password?token=" + token;
+            String resetLink = frontendUrl + "/force-reset?token=" + token;
 
             // Build a clean HTML email
             String htmlContent = "<div style='font-family: Arial, sans-serif; padding: 20px; color: #333;'>"

@@ -20,9 +20,10 @@ public class BackendApplication {
 	CommandLineRunner initAdmin(UserRepository userRepository, PasswordEncoder passwordEncoder) {
 		return args -> {
 			// Change this to your actual email!
-			String adminEmail = "admin@juratech.com";
+			String adminEmail = "sudheendra579@gmail.com";
 			if (!userRepository.existsByEmail(adminEmail)) {
 				UserModel admin = new UserModel();
+				admin.setName("Sudheendra");
 				admin.setEmail(adminEmail);
 				admin.setPassword(passwordEncoder.encode("MasterAdmin123!")); // Initial password
 				admin.setRole("ADMIN");

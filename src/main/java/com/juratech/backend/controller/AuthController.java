@@ -33,6 +33,8 @@ public class AuthController {
 
     @PostMapping("/login")
         public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
+        System.out.println("-----> Attempting to log in user: " + loginRequest.getEmail());
+        System.out.println("-----> Attempting to log in user: " + loginRequest.getPassword());
             // 1. Verify credentials with Spring Security
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
@@ -52,6 +54,7 @@ public class AuthController {
             response.put("email", user.getEmail());
             response.put("role", user.getRole());
             response.put("requiresPasswordChange", user.isRequiresPasswordChange());
+            response.put("name", user.getName());
 
             return ResponseEntity.ok(response);
         }
@@ -69,6 +72,7 @@ public class AuthController {
 
             // 2. Create the new user and hash the password
             UserModel user = new UserModel();
+            user.setName(request.getName());
             user.setEmail(request.getEmail());
             user.setRole(request.getRole().toUpperCase());
             user.setPassword(passwordEncoder.encode(randomPassword));
@@ -130,6 +134,23 @@ public class AuthController {
 
         return ResponseEntity.badRequest().body("Error: User not found.");
     }
+
+
+    @GetMapping("/users")
+    public ResponseEntity<?> getUsersByRole(@RequestParam(required = false) String role) {
+        try {
+            if (role != null) {
+                // If a role is provided (like "?role=REVIEWER"), fetch only those
+                return ResponseEntity.ok(userRepository.findByRole(role.toUpperCase()));
+            } else {
+                // Otherwise, return everyone
+                return ResponseEntity.ok(userRepository.findAll());
+            }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error fetching users: " + e.getMessage());
+        }
+    }
+
     }
 
 
