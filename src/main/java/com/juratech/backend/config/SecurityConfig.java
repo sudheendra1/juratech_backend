@@ -58,6 +58,7 @@ public class SecurityConfig {
                     // 4. Define route permissions
                     .authorizeHttpRequests(auth -> auth
                             // PUBLIC ENDPOINTS: Anyone can access these
+                            .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                             .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                             .requestMatchers("/api/auth/login", "/api/auth/reset-password").permitAll()
 
