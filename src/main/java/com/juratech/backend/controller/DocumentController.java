@@ -4,6 +4,7 @@ import com.juratech.backend.model.ReviewModel;
 import com.juratech.backend.repository.DocumentRepository;
 import com.juratech.backend.repository.ReviewRepository;
 import com.juratech.backend.service.ActivityService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +17,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/vetting")
 //@CrossOrigin(origins = "http://localhost:3000")
+@Tag(name = "Document Management", description = "Endpoints for managing document submissions,retrieval and status")
 public class DocumentController {
 
 

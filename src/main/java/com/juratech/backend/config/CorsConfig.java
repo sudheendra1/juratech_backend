@@ -12,7 +12,7 @@ public class CorsConfig {
                 @Override
                 public void addCorsMappings(CorsRegistry registry) {
                     registry.addMapping("/**") // Apply to all API endpoints
-                            .allowedOrigins("http://localhost:3000","https://juratech.in","https://dev.juratech.in","https://staging.juratech.in") // Explicitly allow your React app
+                            .allowedOrigins("http://localhost:3000","https://juratech.in","https://dev.juratech.in","https://staging.juratech.in","https://www.dev.juratech.in","https://www.staging.juratech.in","https://www.juratech.in") // Explicitly allow your React app
                             .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // OPTIONS is required for preflight
                             .allowedHeaders("*") // Allow all headers (like Content-Type)
                             .allowCredentials(true);

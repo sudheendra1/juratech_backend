@@ -116,7 +116,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         // 1. Explicitly allow your React frontend URL
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000","https://juratech.in","https://dev.juratech.in","https://staging.juratech.in","https://www.dev.juratech.in","https://www.staging.juratech.in","https://www.juratech.in"));
 
         // 2. Allow the standard HTTP methods
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));

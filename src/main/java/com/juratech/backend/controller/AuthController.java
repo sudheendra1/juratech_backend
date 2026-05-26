@@ -8,6 +8,7 @@ import com.juratech.backend.repository.PasswordResetTokenRepository;
 import com.juratech.backend.repository.UserRepository; // You'll need to create this MongoRepository!
 import com.juratech.backend.security.JwtUtils;
 import com.juratech.backend.service.EmailService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,6 +23,7 @@ import java.util.*;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
+@Tag(name = "Authentication", description = "Endpoints for managing user authentication")
 public class AuthController {
 
         private final AuthenticationManager authenticationManager;
