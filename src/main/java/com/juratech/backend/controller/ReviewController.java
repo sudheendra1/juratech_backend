@@ -3,6 +3,7 @@ import com.juratech.backend.model.ReviewModel;
 import com.juratech.backend.repository.ReviewRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,16 +11,13 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/reviews")
+@RequiredArgsConstructor
 //@CrossOrigin(origins = "http://localhost:3000")
 @Tag(name = "Review Management", description = "Endpoints for managing document reviews")
 public class ReviewController {
 
 
         private final ReviewRepository reviewRepository;
-
-        public ReviewController(ReviewRepository reviewRepository) {
-            this.reviewRepository = reviewRepository;
-        }
 
     @Operation(summary = "Submit a review", description = "Posts a new review or updates an existing one for a submission")
         // 1. Submit or Update a Review

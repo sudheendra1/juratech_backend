@@ -1,6 +1,7 @@
 package com.juratech.backend.model;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.Date;
 import java.util.List;
@@ -39,8 +40,10 @@ public class WillFullDefaulterModel {
 
         // 5. System Metadata
         private String submittedBy;
+        @Indexed
         private String submittedByUid;
         private Date submittedAt;
+        @Indexed
         private String status;
         private String module;
 

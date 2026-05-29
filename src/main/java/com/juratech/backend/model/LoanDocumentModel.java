@@ -1,6 +1,7 @@
 package com.juratech.backend.model;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -11,14 +12,14 @@ import java.util.Map;
 public class LoanDocumentModel {
         @Id
         private String id;
-
-
+        @Indexed
         private String userId;
         private String submittedByUid;
         private String submittedBy;
         private String name;
         private String status;
 
+        @Indexed
         private String reviewer;
         private String modifiedBy;
         private Date submittedAt;

@@ -1,10 +1,13 @@
 package com.juratech.backend.controller;
 import com.juratech.backend.model.LoanDocumentModel;
-import com.juratech.backend.model.ReviewModel;
 import com.juratech.backend.repository.DocumentRepository;
 import com.juratech.backend.repository.ReviewRepository;
 import com.juratech.backend.service.ActivityService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +19,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/vetting")
+@lombok.RequiredArgsConstructor
 //@CrossOrigin(origins = "http://localhost:3000")
 @Tag(name = "Document Management", description = "Endpoints for managing document submissions,retrieval and status")
 public class DocumentController {
@@ -25,13 +29,7 @@ public class DocumentController {
         private final ReviewRepository reviewRepo;
         private final ActivityService activityService;
 
-        public DocumentController(DocumentRepository submissionRepo, ReviewRepository reviewRepo, ActivityService activityService) {
-            this.submissionRepo = submissionRepo;
-            this.reviewRepo = reviewRepo;
-            this.activityService = activityService;
-        }
-
-        // --- FOR USERS ---
+    // --- FOR USERS ---
 
         @PostMapping("/submissions")
         public ResponseEntity<LoanDocumentModel> createSubmission(@RequestBody LoanDocumentModel submission) {
@@ -50,16 +48,18 @@ public class DocumentController {
         }
 
         @GetMapping("/submissions/user/{userId}")
-        public ResponseEntity<List<LoanDocumentModel>> getUserSubmissions(@PathVariable String userId) {
-            return ResponseEntity.ok(submissionRepo.findByUserIdOrderBySubmittedAtDesc(userId));
+        public ResponseEntity<Page<LoanDocumentModel>> getUserSubmissions(@PathVariable String userId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+            Pageable pageable = PageRequest.of(page, size, Sort.by("submittedAt").descending());
+            return ResponseEntity.ok(submissionRepo.findByUserIdOrderBySubmittedAtDesc(userId,pageable));
         }
 
         // --- FOR REVIEWERS / ADMINS ---
 
         @GetMapping("/submissions/queue")
-        public ResponseEntity<List<LoanDocumentModel>> getPendingQueue() {
+        public ResponseEntity<Page<LoanDocumentModel>> getPendingQueue(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+            Pageable pageable = PageRequest.of(page, size, Sort.by("submittedAt").descending());
             List<String> activeStatuses = Arrays.asList("pending", "under-review","pending-under-review","approved","rejected");
-            return ResponseEntity.ok(submissionRepo.findByStatusInOrderBySubmittedAtAsc(activeStatuses));
+            return ResponseEntity.ok(submissionRepo.findByStatusInOrderBySubmittedAtAsc(activeStatuses,pageable));
         }
 
     @GetMapping("/submissions/{id}")
@@ -71,10 +71,11 @@ public class DocumentController {
 
     // 1. Fetch all submissions assigned to a specific reviewer
     @GetMapping("/submissions/reviewer/{reviewerId}")
-    public ResponseEntity<List<LoanDocumentModel>> getReviewerSubmissions(@PathVariable String reviewerId) {
+    public ResponseEntity<Page<LoanDocumentModel>> getReviewerSubmissions(@PathVariable String reviewerId,@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         // NOTE: If you want Reviewers to also see UNASSIGNED documents in their queue,
         // you would write logic here to return findByStatus("pending") as well!
-        return ResponseEntity.ok(submissionRepo.findByReviewerOrderBySubmittedAtDesc(reviewerId));
+        Pageable pageable = PageRequest.of(page, size, Sort.by("submittedAt").descending());
+        return ResponseEntity.ok(submissionRepo.findByReviewerOrderBySubmittedAtDesc(reviewerId,pageable));
     }
 
     // 2. Update the status and assign a reviewer

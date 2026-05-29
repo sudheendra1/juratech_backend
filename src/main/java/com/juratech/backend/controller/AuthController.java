@@ -8,8 +8,12 @@ import com.juratech.backend.repository.PasswordResetTokenRepository;
 import com.juratech.backend.repository.UserRepository; // You'll need to create this MongoRepository!
 import com.juratech.backend.security.JwtUtils;
 import com.juratech.backend.service.EmailService;
+import io.github.bucket4j.Bandwidth;
+import io.github.bucket4j.Bucket;
+import io.github.bucket4j.Refill;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,6 +22,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Duration;
 import java.util.*;
 
 @RestController
@@ -32,11 +37,18 @@ public class AuthController {
         private final JwtUtils jwtUtils;
         private final EmailService emailService; // We will wire this up next!
         private final PasswordResetTokenRepository tokenRepository;
+        private final Bucket loginRateBucket = Bucket.builder()
+            .addLimit(Bandwidth.classic(5, Refill.intervally(5, Duration.ofMinutes(5))))
+            .build();
 
     @PostMapping("/login")
         public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
+        if (!loginRateBucket.tryConsume(1)) {
+            return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+                    .body("Too many request attempts. Please try again in 5 minutes.");
+        }
         System.out.println("-----> Attempting to log in user: " + loginRequest.getEmail());
-        System.out.println("-----> Attempting to log in user: " + loginRequest.getPassword());
+//        System.out.println("-----> Attempting to log in user: " + loginRequest.getPassword());
             // 1. Verify credentials with Spring Security
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));

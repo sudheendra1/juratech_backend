@@ -2,6 +2,10 @@ package com.juratech.backend.service;
 import com.juratech.backend.model.WillFullDefaulterModel;
 import com.juratech.backend.repository.WillFullDefaulterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
@@ -25,13 +29,15 @@ public class WillFullDefaulterService {
         }
 
         // 2. Get all submissions (Admin Dashboard)
-        public List<WillFullDefaulterModel> getAllSubmissions() {
-            return repository.findAllByOrderBySubmittedAtDesc();
+        public Page<WillFullDefaulterModel> getAllSubmissions(int page, int size) {
+            Pageable pageable = PageRequest.of(page, size, Sort.by("submittedAt").descending());
+            return repository.findAllByOrderBySubmittedAtDesc(pageable);
         }
 
         // 3. Get submissions for a specific user (My Submissions)
-        public List<WillFullDefaulterModel> getUserSubmissions(String userId) {
-            return repository.findBySubmittedByUidOrderBySubmittedAtDesc(userId);
+        public Page<WillFullDefaulterModel> getUserSubmissions(String userId,int page, int size) {
+            Pageable pageable = PageRequest.of(page, size, Sort.by("submittedAt").descending());
+            return repository.findBySubmittedByUidOrderBySubmittedAtDesc(userId,pageable);
         }
 
         // 4. Get a single submission (Details Page)

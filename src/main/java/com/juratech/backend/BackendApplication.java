@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 
 @SpringBootApplication
+@org.springframework.cache.annotation.EnableCaching
 public class BackendApplication {
 
 	public static void main(String[] args) {
